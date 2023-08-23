@@ -1,22 +1,31 @@
 import os
-from pydantic import BaseSettings, PostgresDsn
-from logging import config as logging_config
+from pathlib import Path
 
+from dotenv import load_dotenv
+from pydantic import BaseSettings, PostgresDsn, Field
+from logging import config as logging_config
 from src.core.logger import LOGGING
+
+env_path = Path('.') / '.env'
+load_dotenv(dotenv_path=env_path)
 
 logging_config.dictConfig(LOGGING)
 
-PROJECT_NAME = os.getenv('PROJECT_NAME', 'Link Shortener')
-PROJECT_HOST = os.getenv('PROJECT_HOST', '0.0.0.0')
-PROJECT_PORT = int(os.getenv('PROJECT_PORT', '8000'))
+db_echo_mode = True
 
 
 class AppSettings(BaseSettings):
-    app_title: str = "Link Shortener"
-    database_dsn: PostgresDsn = "postgresql+asyncpg://postgres:postgres@localhost:5432/collection"
+    app_title: str = "Title"
+    database_dsn: PostgresDsn
+    project_name: str = 'Some project name'
+    redis_host: str = ...
+    redis_port: int = ...
+    elastic_host: str = Field(..., env='ELASTIC_HOST_NAME')
+    elastic_port: int = Field(9200, env='ELASTIC_PORT')
 
-    class Config:
-        env_file = '.env'
+
+class Config:
+    env_file = '.env'
 
 
 app_settings = AppSettings()

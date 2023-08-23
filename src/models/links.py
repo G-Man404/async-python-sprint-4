@@ -3,7 +3,6 @@ from sqlalchemy.orm import relationship
 from datetime import datetime
 
 from .base import Base
-from .transitions import Transitions
 
 
 class Links(Base):
@@ -11,8 +10,8 @@ class Links(Base):
 
     id = Column(Integer, primary_key=True)
     created_at = Column(DateTime, index=True, default=datetime.utcnow)
-    full_link = Column(String)
-    creator = Column(String)
+    full_link = Column(String(100))
+    creator = Column(String(30))
     remove = Column(Boolean, default=False)
 
     transitions = relationship("Transitions")

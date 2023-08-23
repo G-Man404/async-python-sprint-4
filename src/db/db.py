@@ -1,4 +1,5 @@
 import asyncio
+
 from src.core.config import app_settings
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import create_async_engine
@@ -8,8 +9,9 @@ from sqlalchemy.exc import OperationalError
 from src.models.base import Base
 from src.models.links import Links
 from src.models.transitions import Transitions
+from src.core.config import db_echo_mode
 
-engine = create_async_engine(app_settings.database_dsn, echo=True, future=True)
+engine = create_async_engine(app_settings.database_dsn, echo=db_echo_mode, future=True)
 async_session = sessionmaker(
     engine, class_=AsyncSession, expire_on_commit=False
 )
@@ -67,8 +69,6 @@ async def find_full_link(short_link: int) -> Links:
 async def add_transition(link: Links, user: str):
     async with async_session() as session:
         transitions = Transitions(link=link, user=user)
-        print("===================================")
-        print(transitions.user)
         session.add(transitions)
         await session.commit()
 
@@ -77,7 +77,6 @@ async def get_transitions(short_link: int) -> str:
     async with async_session() as session:
         query = select(Transitions).join(Transitions.link).where(Links.id == short_link)
         transitions = (await session.scalars(query)).all()
-        print(transitions)
         return transitions
 
 

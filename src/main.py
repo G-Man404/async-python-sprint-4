@@ -1,9 +1,8 @@
 import uvicorn
-from fastapi import FastAPI, Depends, Request, Header, HTTPException, status
+from fastapi import FastAPI, Depends, Request, HTTPException, status
 from fastapi.responses import ORJSONResponse
 
 from core import config
-from core.logger import LOGGING
 from api.get_full_link.base import router_get_full_link
 from api.add_short_link.base import router_add_short_link
 from api.del_short_link.base import router_del_short_link
@@ -39,6 +38,6 @@ app.include_router(router_status, prefix="/status")
 if __name__ == '__main__':
     uvicorn.run(
         'main:app',
-        host=config.PROJECT_HOST,
-        port=config.PROJECT_PORT,
+        host=config.app_settings.redis_host,
+        port=config.app_settings.redis_port,
     )

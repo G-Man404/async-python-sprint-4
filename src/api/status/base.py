@@ -19,6 +19,5 @@ async def status(link, full: bool = False, offset: int = 0, max: int = 10):
     transitions = await get_transitions(int(link))
     if not full:
         return len(transitions)
-    else:
-        new_trans = transitions[offset: offset+max]
-        return new_trans
+    new_trans = transitions[offset: offset+max]
+    return new_trans
