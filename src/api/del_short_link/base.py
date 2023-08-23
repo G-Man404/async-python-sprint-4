@@ -7,5 +7,7 @@ router_del_short_link = APIRouter()
 
 @router_del_short_link.get('/')
 async def add_short_link(link):
-    await del_link(int(link))
-    return Response(status_code=201)
+    if await del_link(int(link)):
+        return Response(status_code=201)
+    else:
+        return Response(status_code=404)

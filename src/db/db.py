@@ -43,10 +43,12 @@ async def del_link(link_id: int):
     async with async_session() as session:
         query = select(Links).where(Links.id == link_id)
         link = await session.scalar(query)
+        if link is None:
+            return False
         link.remove = True
         session.add(link)
         await session.commit()
-
+        return True
 
 async def find_short_link(full_link: str) -> Links:
     async with async_session() as session:
